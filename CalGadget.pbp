@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 LTS (Windows - x64)">
+  <section name="config">
+    <options closefiles="1" openmode="0" name="iCal Calendar Gadget"/>
+  </section>
+  <section name="data">
+    <explorer view="..\Eldarian Odyssey\" pattern="0"/>
+    <log show="1"/>
+    <lastopen date="2020-03-14 14:32" user="bytecave" host="VILM"/>
+  </section>
+  <section name="files">
+    <file name="iCalModule.pbi">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
+      <fingerprint md5="268b7255d1b7c94a4b045872bc0e21a9"/>
+    </file>
+    <file name="test.pb">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
+      <fingerprint md5="0623d71a6ccad55331a0a22a66d4f5a8"/>
+    </file>
+  </section>
+  <section name="targets">
+    <target name="Default Target" enabled="1" default="1">
+      <inputfile value="test.pb"/>
+      <outputfile value=""/>
+      <options xpskin="1" dpiaware="1" debug="1"/>
+    </target>
+  </section>
+</project>

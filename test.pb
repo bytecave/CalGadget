@@ -1,18 +1,47 @@
 ﻿OpenWindow(0, 0, 0, 0, 0, "", #PB_Window_Invisible)
-OpenWindow(1, 0, 0, 500, 300, "", #PB_Window_ScreenCentered | #PB_Window_BorderLess, WindowID(0))
+OpenWindow(1, 0, 0, 600, 400, "", #PB_Window_ScreenCentered | #PB_Window_BorderLess, WindowID(0))
+cvsCalendar = CanvasGadget(#PB_Any, 0, 0, 600, 400, #PB_Canvas_Border)
 
 XIncludeFile "iCalModule.pbi"
 
-InitNetwork()
-
 Filename$ = "C:\Users\bytecave\Desktop\msft.ics"
 
-  If ReceiveHTTPFile("https://outlook.office365.com/owa/calendar/aff5ddd2d53c4603a3bc9d3f8ac38e7a@microsoft.com/20a729b46729493da38146d0da69061e1216144310575959539/calendar.ics", Filename$)
-    Debug "Success"
-  Else
-    Debug "Failed"
-  EndIf
+Procedure DownloadCalendar()
+InitNetwork()
+
+  iCalDownload = ReceiveHTTPFile(""https://outlook.office365.com/owa/calendar/aff5ddd2d53c4603a3bc9d3f8ac38e7a@microsoft.com/20a729b46729493da38146d0da69061e1216144310575959539/calendar.ics", Filename$, #PB_HTTP_Asynchronous)
   
+  If iCalDownload
+    Repeat
+      Progress = HTTPProgress(iCalDownload)
+      Select Progress
+        Case #PB_HTTP_Success
+          *Buffer = FinishHTTP(iCalDownload)
+          Debug "Download finished (size: " + MemorySize(*Buffer) + ")"
+          FreeMemory(*Buffer)
+          End
+
+        Case #PB_HTTP_Failed
+          Debug "Download failed"
+          FinishHTTP(iCalDownload)
+          End
+
+        Case #PB_HTTP_Aborted
+          Debug "Download aborted"
+          FinishHTTP(iCalDownload)
+          End
+          
+        Default
+          Debug "Current download: " + Progress
+       
+      EndSelect
+      
+      Delay(50) ; Don't stole the whole CPU
+    ForEver
+  EndIf
+EndProcedure
+  
+  CreateThread(@DownloadCalendar)
   
     NewList Events.iCal::Event_Structure()
     
@@ -50,3 +79,13 @@ Repeat
   EndIf
 ForEver
 
+
+; IDE Options = PureBasic 5.71 LTS (Windows - x64)
+; CursorPosition = 42
+; FirstLine = 4
+; Folding = -
+; EnableThread
+; EnableXP
+; DPIAware
+; EnableCompileCount = 17
+; EnableBuildCount = 0
