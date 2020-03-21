@@ -6,14 +6,17 @@ XIncludeFile "iCalModule.pbi"
 
 Filename$ = "C:\Users\bytecave\Desktop\msft.ics"
 
-Procedure DownloadCalendar()
+Procedure DownloadCalendar(*value)
+zFilename$ = "C:\Users\bytecave\Desktop\msft.ics"
+
 InitNetwork()
 
-  iCalDownload = ReceiveHTTPFile(""https://outlook.office365.com/owa/calendar/aff5ddd2d53c4603a3bc9d3f8ac38e7a@microsoft.com/20a729b46729493da38146d0da69061e1216144310575959539/calendar.ics", Filename$, #PB_HTTP_Asynchronous)
+  iCalDownload = ReceiveHTTPFile("https://outlook.office365.com/owa/calendar/aff5ddd2d53c4603a3bc9d3f8ac38e7a@microsoft.com/20a729b46729493da38146d0da69061e1216144310575959539/calendar.ics", zFilename$, #PB_HTTP_Asynchronous)
   
   If iCalDownload
     Repeat
       Progress = HTTPProgress(iCalDownload)
+      
       Select Progress
         Case #PB_HTTP_Success
           *Buffer = FinishHTTP(iCalDownload)
@@ -41,8 +44,6 @@ InitNetwork()
   EndIf
 EndProcedure
   
-  CreateThread(@DownloadCalendar)
-  
     NewList Events.iCal::Event_Structure()
     
     If iCal::Create(500)
@@ -60,16 +61,19 @@ EndProcedure
           ;Events()\Class       = iCal()\Event()\Class
           
           With Events()
-            Debug "Event: " + \Summary + ": " + \Location
-            Debug "Start: " + FormatDate("%mm/%dd %hh:%ii", \StartDate)
-            Debug "End: " + FormatDate("%mm/%dd %hh:%ii", \EndDate)
-            Debug "Class: " + \Class
-            Debug "Description: " + \Description
+            ;Debug "Event: " + \Summary + ": " + \Location
+            ;Debug "Start: " + FormatDate("%mm/%dd %hh:%ii", \StartDate)
+            ;Debug "End: " + FormatDate("%mm/%dd %hh:%ii", \EndDate)
+            ;Debug "Class: " + \Class
+            ;Debug "Description: " + \Description
           EndWith
           
     Next
   EndIf
   
+    CreateThread(@DownloadCalendar(), 0)
+  
+
 Repeat
   Event = WaitWindowEvent()
   If Event = #PB_Event_RightClick
